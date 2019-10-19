@@ -10,7 +10,7 @@ import (
 type Post struct {
 	ID        int64             `json:"id"`
 	Content   string            `json:"content"`
-	MediaURLs []*string         `json:"media_urls"`
+	MediaURLs []string          `json:"media_urls"`
 	UserID    int64             `json:"user_id"`
 	GroupID   int64             `json:"group_id"`
 	Comments  []*models.Comment `json:"comments"`
