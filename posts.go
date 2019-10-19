@@ -63,7 +63,7 @@ func (s *Service) listPosts(ctx context.Context, groupID int64, offset, limit in
 }
 
 // update post logic
-func (s *Service) updatePost(ctx context.Context, form PForm) (*models.Post, error) {
+func (s *Service) updatePost(ctx context.Context, id int64, form PForm) (*models.Post, error) {
 
 	// TODO: get user id from context
 	userID := int64(1)
@@ -72,7 +72,7 @@ func (s *Service) updatePost(ctx context.Context, form PForm) (*models.Post, err
 		return nil, ErrorForm
 	}
 
-	post, err := s.provider.Update(ctx, form.Content, []string{}, form.UserID, form.GroupID)
+	post, err := s.provider.Update(ctx, form.Content, []string{}, form.UserID, id)
 
 	if err != nil {
 		return nil, err
