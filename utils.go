@@ -29,7 +29,6 @@ func getOffsetAndLimit(r *http.Request) (int, int) {
 	limit := 0
 
 	off, err := strconv.Atoi(r.URL.Query().Get("offset"))
-
 	if err != nil {
 		offset = DefaultOffset
 	} else {
@@ -37,6 +36,8 @@ func getOffsetAndLimit(r *http.Request) (int, int) {
 			offset = DefaultOffset
 		} else if off > MaxOffset {
 			offset = MaxOffset
+		} else {
+			offset = off
 		}
 	}
 
