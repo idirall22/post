@@ -33,7 +33,7 @@ func (p *PostgresProvider) New(ctx context.Context, content string, mediaURLs []
 	err = stmt.QueryRowContext(ctx, content, pq.Array(mediaURLs), userID, groupID).Scan(&post.ID, &post.CreatedAt)
 
 	if err != nil {
-		return nil, err
+		return nil, parseError(err)
 	}
 	post.Content = content
 	post.UserID = userID
@@ -142,7 +142,7 @@ func (p *PostgresProvider) Update(ctx context.Context, content string, mediaURLs
 	post.UserID = userID
 
 	if err != nil {
-		return nil, err
+		return nil, parseError(err)
 	}
 	return post, nil
 }
@@ -159,7 +159,7 @@ func (p *PostgresProvider) Delete(ctx context.Context, userID, id int64) error {
 	_, err = stmt.ExecContext(ctx, time.Now(), id, userID)
 
 	if err != nil {
-		return err
+		return parseError(err)
 	}
 
 	return nil
