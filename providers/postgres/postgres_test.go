@@ -109,7 +109,7 @@ func testGet(t *testing.T) {
 
 // Test List
 func testList(t *testing.T) {
-	posts, err := provider.List(context.Background(), 1, 5, 0)
+	posts, err := provider.List(context.Background(), 1, 1, 5, 0)
 
 	if err != nil {
 		t.Error("Error should be nil but got:", err)

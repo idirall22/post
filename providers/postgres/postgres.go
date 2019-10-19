@@ -75,7 +75,7 @@ func (p *PostgresProvider) Get(ctx context.Context, id, userID, groupID int64) (
 }
 
 // List return a list of posts using limit and offset
-func (p *PostgresProvider) List(ctx context.Context, groupID int64, limit, offset int) ([]*models.Post, error) {
+func (p *PostgresProvider) List(ctx context.Context, userID, groupID int64, limit, offset int) ([]*models.Post, error) {
 
 	query := fmt.Sprintf(`
         SELECT id, content, media_urls, user_id, group_id FROM %s
