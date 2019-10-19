@@ -15,6 +15,10 @@ func (s *Service) AddPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -24,6 +28,10 @@ func (s *Service) AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := s.addPost(ctx, form)
 
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -42,6 +50,10 @@ func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	groupID, err := parseID(params["groupID"])
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -53,6 +65,10 @@ func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := s.listPosts(ctx, groupID, offset, limit)
 
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -71,11 +87,19 @@ func (s *Service) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := parseID(params["id"])
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
 	groupID, err := parseID(params["groupID"])
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -85,6 +109,10 @@ func (s *Service) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := s.getPost(ctx, id, groupID)
 
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -103,6 +131,10 @@ func (s *Service) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := parseID(params["id"])
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -110,6 +142,10 @@ func (s *Service) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -119,6 +155,10 @@ func (s *Service) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post, err := s.updatePost(ctx, id, form)
 
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -137,6 +177,10 @@ func (s *Service) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := parseID(params["id"])
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 
@@ -146,6 +190,10 @@ func (s *Service) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 	err = s.deletePost(ctx, id)
 
 	if err != nil {
+
+		message, code := parseError(err)
+		http.Error(w, message, code)
+
 		return
 	}
 

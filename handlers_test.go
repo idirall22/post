@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	u "github.com/idirall22/user"
 )
 
 // Test AddPostHandler
@@ -34,7 +35,8 @@ func testAddPostHandler(t *testing.T) {
 		return
 	}
 
-	h := http.HandlerFunc(testService.AddPostHandler)
+	r.Header.Add("Authorization", testToken)
+	h := http.HandlerFunc(u.AuthnticateUser(testService.AddPostHandler))
 
 	h.ServeHTTP(w, r)
 
@@ -53,10 +55,11 @@ func testGetPostHandler(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	// mux.SetURLVars(r, map[string]string{"id": "1", "groupID": "1"})
+
+	r.Header.Add("Authorization", testToken)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/post/{groupID}/{id}", testService.GetPostHandler)
+	router.HandleFunc("/post/{groupID}/{id}", u.AuthnticateUser(testService.GetPostHandler))
 	router.ServeHTTP(w, r)
 
 	if w.Code != http.StatusOK {
@@ -75,8 +78,10 @@ func testListPostsHandler(t *testing.T) {
 		return
 	}
 
+	r.Header.Add("Authorization", testToken)
+
 	router := mux.NewRouter()
-	router.HandleFunc("/posts/{groupID}", testService.ListPostsHandler)
+	router.HandleFunc("/posts/{groupID}", u.AuthnticateUser(testService.ListPostsHandler))
 	router.ServeHTTP(w, r)
 
 	if w.Code != http.StatusOK {
@@ -108,8 +113,10 @@ func testUpdatePostHandler(t *testing.T) {
 		return
 	}
 
+	r.Header.Add("Authorization", testToken)
+
 	router := mux.NewRouter()
-	router.HandleFunc("/post/{id}", testService.UpdatePostHandler)
+	router.HandleFunc("/post/{id}", u.AuthnticateUser(testService.UpdatePostHandler))
 	router.ServeHTTP(w, r)
 
 	if w.Code != http.StatusOK {
@@ -127,8 +134,10 @@ func testDeletePostHandler(t *testing.T) {
 		return
 	}
 
+	r.Header.Add("Authorization", testToken)
+
 	router := mux.NewRouter()
-	router.HandleFunc("/post/{id}", testService.DeletePostHandler)
+	router.HandleFunc("/post/{id}", u.AuthnticateUser(testService.DeletePostHandler))
 	router.ServeHTTP(w, r)
 
 	if w.Code != http.StatusNoContent {
