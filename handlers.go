@@ -47,8 +47,6 @@ func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	offset, limit := getOffsetAndLimit(r)
 
-	r.URL.Query().Get("limit")
-
 	ctx, f := context.WithTimeout(r.Context(), TimeoutRequest)
 	defer f()
 
