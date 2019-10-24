@@ -2,19 +2,8 @@ package post
 
 import (
 	"database/sql"
-	"time"
 
 	pr "github.com/idirall22/post/providers/postgres"
-)
-
-// TimeoutRequest time to stop a request
-var TimeoutRequest = time.Second * 5
-
-var (
-	// DefaultOffset offset used in db
-	DefaultOffset = 5
-	// MaxOffset offset used in db
-	MaxOffset = 10
 )
 
 // Service structure

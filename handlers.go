@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/idirall22/utilities"
 )
 
 // AddPostHandler add a post
@@ -46,9 +46,7 @@ func (s *Service) AddPostHandler(w http.ResponseWriter, r *http.Request) {
 // ListPostsHandler list posts
 func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	groupID, err := parseID(params["groupID"])
+	groupID, err := utilities.GetURLID(r, "groupID")
 	if err != nil {
 
 		message, code := parseError(err)
@@ -57,7 +55,7 @@ func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	offset, limit := getOffsetAndLimit(r)
+	limit, offset := utilities.GetParamsURLLimitAndOffset(r, DefaultLimit, "", "")
 
 	ctx, f := context.WithTimeout(r.Context(), TimeoutRequest)
 	defer f()
@@ -83,9 +81,7 @@ func (s *Service) ListPostsHandler(w http.ResponseWriter, r *http.Request) {
 // GetPostHandler get a post
 func (s *Service) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	id, err := parseID(params["id"])
+	id, err := utilities.GetURLID(r, "")
 	if err != nil {
 
 		message, code := parseError(err)
@@ -94,7 +90,7 @@ func (s *Service) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	groupID, err := parseID(params["groupID"])
+	groupID, err := utilities.GetURLID(r, "groupID")
 	if err != nil {
 
 		message, code := parseError(err)
@@ -127,9 +123,7 @@ func (s *Service) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 // UpdatePostHandler update a post
 func (s *Service) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	id, err := parseID(params["id"])
+	id, err := utilities.GetURLID(r, "")
 	if err != nil {
 
 		message, code := parseError(err)
@@ -173,9 +167,7 @@ func (s *Service) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
 // DeletePostHandler delete a post
 func (s *Service) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	id, err := parseID(params["id"])
+	id, err := utilities.GetURLID(r, "")
 	if err != nil {
 
 		message, code := parseError(err)

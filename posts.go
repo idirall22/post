@@ -56,7 +56,7 @@ func (s *Service) listPosts(ctx context.Context, groupID int64, offset, limit in
 		return nil, err
 	}
 
-	if err := checkIfIDIsValid(groupID); err != nil {
+	if err := utilities.ValidateID(groupID); err != nil {
 		return nil, err
 	}
 
