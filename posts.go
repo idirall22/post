@@ -38,10 +38,6 @@ func (s *Service) getPost(ctx context.Context, id, groupID int64) (*models.Post,
 		return nil, err
 	}
 
-	if id < 1 {
-		return nil, ErrorID
-	}
-
 	post, err := s.provider.Get(ctx, userID, id, groupID)
 
 	if err != nil {
@@ -101,10 +97,6 @@ func (s *Service) deletePost(ctx context.Context, id int64) error {
 	userID, err := utilities.GetUserIDFromContext(ctx)
 
 	if err != nil {
-		return err
-	}
-
-	if err := checkIfIDIsValid(id); err != nil {
 		return err
 	}
 
