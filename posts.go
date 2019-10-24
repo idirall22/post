@@ -4,13 +4,18 @@ import (
 	"context"
 
 	"github.com/idirall22/post/models"
+	"github.com/idirall22/utilities"
 )
 
 // add post logic
 func (s *Service) addPost(ctx context.Context, form PForm) (*models.Post, error) {
 
-	// TODO: get user id from context
-	userID := int64(1)
+	userID, err := utilities.GetUserIDFromContext(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
 	if !form.ValidateForm(userID) {
 		return nil, ErrorForm
 	}
@@ -27,8 +32,11 @@ func (s *Service) addPost(ctx context.Context, form PForm) (*models.Post, error)
 // get post logic
 func (s *Service) getPost(ctx context.Context, id, groupID int64) (*models.Post, error) {
 
-	// TODO: get user id from context
-	userID := int64(1)
+	userID, err := utilities.GetUserIDFromContext(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if id < 1 {
 		return nil, ErrorID
@@ -46,8 +54,11 @@ func (s *Service) getPost(ctx context.Context, id, groupID int64) (*models.Post,
 // list posts logic
 func (s *Service) listPosts(ctx context.Context, groupID int64, offset, limit int) ([]*models.Post, error) {
 
-	// TODO: get user id from context
-	userID := int64(1)
+	userID, err := utilities.GetUserIDFromContext(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if err := checkIfIDIsValid(groupID); err != nil {
 		return nil, err
@@ -65,8 +76,11 @@ func (s *Service) listPosts(ctx context.Context, groupID int64, offset, limit in
 // update post logic
 func (s *Service) updatePost(ctx context.Context, id int64, form PForm) (*models.Post, error) {
 
-	// TODO: get user id from context
-	userID := int64(1)
+	userID, err := utilities.GetUserIDFromContext(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if !form.ValidateForm(userID) {
 		return nil, ErrorForm
@@ -84,8 +98,11 @@ func (s *Service) updatePost(ctx context.Context, id int64, form PForm) (*models
 // delete post logic
 func (s *Service) deletePost(ctx context.Context, id int64) error {
 
-	// TODO: get user id from context
-	userID := int64(1)
+	userID, err := utilities.GetUserIDFromContext(ctx)
+
+	if err != nil {
+		return err
+	}
 
 	if err := checkIfIDIsValid(id); err != nil {
 		return err
