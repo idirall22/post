@@ -5,73 +5,54 @@ import (
 	"database/sql"
 	"fmt"
 	"testing"
+
+	"github.com/idirall22/utilities"
+	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "diskshar_test"
+var (
+	provider  *PostgresProvider
+	database  *sql.DB
+	testToken string
+	postNum   = 5
+	tableName = "posts"
+	query     = fmt.Sprintf(`
+	DROP TABLE IF EXISTS %s;
+
+	CREATE TABLE IF NOT EXISTS %s(
+		id SERIAL PRIMARY KEY,
+		content VARCHAR NOT NULL,
+		media_urls text[],
+		user_id INTEGER REFERENCES users(id),
+		group_id INTEGER REFERENCES groups(id),
+		created_at TIMESTAMP with TIME ZONE DEFAULT now(),
+		deleted_at TIMESTAMP DEFAULT NULL
+	);
+	`, tableName, tableName)
 )
 
-var postNum = 5
-var provider *PostgresProvider
-
-func cleanDB(db *sql.DB) error {
-	query := fmt.Sprintf(`
-		DROP TABLE IF EXISTS posts;
-
-		CREATE TABLE IF NOT EXISTS posts(
-		    id SERIAL PRIMARY KEY,
-            content VARCHAR NOT NULL,
-			media_urls text[],
-			user_id INTEGER NOT NULL,
-			group_id INTEGER NOT NULL,
-		    created_at TIMESTAMP with TIME ZONE DEFAULT now(),
-		    deleted_at TIMESTAMP DEFAULT NULL
-		);
-		`)
-
-	_, err := db.Exec(query)
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func closeDB(db *sql.DB) {
-	db.Close()
-}
-
-func connectDB() error {
-
-	dbInfos := fmt.Sprintf(`host=%s port=%d user=%s password=%s dbname=%s sslmode=disable`,
-		host, port, user, password, dbname)
-
-	db, err := sql.Open("postgres", dbInfos)
-	if err != nil {
-		return err
-	}
-
-	provider = &PostgresProvider{DB: db, TableName: "posts"}
-
-	err = cleanDB(db)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
+// TestGlobal run tests
 func TestGlobal(t *testing.T) {
-	err := connectDB()
+
+	db, err := utilities.ConnectDataBaseTest()
+
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	defer closeDB(provider.DB)
+
+	err = utilities.BuildDataBase(db, query)
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	defer utilities.CloseDataBaseTest(db)
+
+	provider = &PostgresProvider{DB: db, TableName: tableName}
+
+	testToken = utilities.LoginUser(db)
 
 	t.Run("New", testNew)
 	t.Run("Get", testGet)
