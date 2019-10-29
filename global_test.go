@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/idirall22/post/brokers/memory"
 	pr "github.com/idirall22/post/providers/postgres"
 	"github.com/idirall22/utilities"
 	_ "github.com/lib/pq"
@@ -16,7 +17,7 @@ var (
 	testToken   string
 	tableName   = "posts"
 	query       = fmt.Sprintf(`
-	DROP TABLE IF EXISTS %s;
+	DROP TABLE IF EXISTS %s CASCADE;
 
 	CREATE TABLE IF NOT EXISTS %s(
 		id SERIAL PRIMARY KEY,
@@ -50,7 +51,8 @@ func TestGlobal(t *testing.T) {
 	defer utilities.CloseDataBaseTest(db)
 
 	provider := &pr.PostgresProvider{DB: db, TableName: tableName}
-	testService = &Service{provider: provider}
+	broker := &memory.Memory{}
+	testService = &Service{provider: provider, broker: broker}
 
 	testToken = utilities.LoginUser(db)
 
@@ -59,4 +61,6 @@ func TestGlobal(t *testing.T) {
 	t.Run("lists posts handler", testListPostsHandler)
 	t.Run("update posts handler", testUpdatePostHandler)
 	t.Run("delete posts handler", testDeletePostHandler)
+
+	t.Run("post stream client", testSubscribeClientStream)
 }
