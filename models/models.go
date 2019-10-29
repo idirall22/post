@@ -17,3 +17,10 @@ type Post struct {
 	CreatedAt time.Time         `json:"created_at"`
 	DeletedAt *time.Time        `json:"deleted_at"`
 }
+
+// ClientStream structure
+type ClientStream struct {
+	Post    chan *Post
+	UserID  int64
+	GroupID int64
+}
