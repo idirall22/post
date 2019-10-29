@@ -3,6 +3,7 @@ package post
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/idirall22/utilities"
@@ -191,4 +192,30 @@ func (s *Service) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 	w.Header().Add("Content-Type", "application/json")
+}
+
+// SubscribeClientStream endpoint
+func (s *Service) SubscribeClientStream(w http.ResponseWriter, r *http.Request) {
+	flusher, ok := w.(http.Flusher)
+
+	if !ok {
+		http.Error(w, "Error streaming not supported", http.StatusBadRequest)
+		return
+	}
+
+	cp := s.subscribeClientStream(context.Background(), 1, 1)
+
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-live")
+	w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
+
+	for post := range cp.Post {
+		b, err := json.Marshal(post)
+		if err != nil {
+			fmt.Fprintf(w, "Error/data %v\n\n", err)
+			return
+		}
+		fmt.Fprintf(w, "%s\n\n", b)
+		flusher.Flush()
+	}
 }
