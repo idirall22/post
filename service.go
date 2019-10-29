@@ -14,7 +14,7 @@ type Service struct {
 }
 
 // NewService create a new  post service
-func NewService(db *sql.DB, tableName string) *Service {
+func StartService(db *sql.DB, tableName string) *Service {
 	return &Service{
 		provider: &pr.PostgresProvider{DB: db, TableName: tableName},
 		broker:   &memory.Memory{},
