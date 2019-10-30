@@ -6,15 +6,14 @@ import (
 )
 
 // Router comment endpoints
-func (s *Service) Router() *mux.Router {
-	r := &mux.Router{}
+func (s *Service) Router(r *mux.Router) {
 
-	r.HandleFunc("/posts", u.AuthnticateUser(s.ListPostsHandler)).Methods("GET")
-	r.HandleFunc("/posts/{id}", u.AuthnticateUser(s.GetPostHandler)).Methods("GET")
-	r.HandleFunc("/posts", u.AuthnticateUser(s.AddPostHandler)).Methods("POST")
-	r.HandleFunc("/posts/{id}", u.AuthnticateUser(s.UpdatePostHandler)).Methods("PUT")
-	r.HandleFunc("/posts/{id}", u.AuthnticateUser(s.DeletePostHandler)).Methods("DELETE")
-	r.HandleFunc("/posts/stream", u.AuthnticateUser(s.SubscribeClientStream))
+	sr := r.PathPrefix("/posts").Subrouter()
 
-	return r
+	sr.HandleFunc("/", u.AuthnticateUser(s.ListPostsHandler)).Methods("GET")
+	sr.HandleFunc("/{id}", u.AuthnticateUser(s.GetPostHandler)).Methods("GET")
+	sr.HandleFunc("/", u.AuthnticateUser(s.AddPostHandler)).Methods("POST")
+	sr.HandleFunc("/{id}", u.AuthnticateUser(s.UpdatePostHandler)).Methods("PUT")
+	sr.HandleFunc("/{id}", u.AuthnticateUser(s.DeletePostHandler)).Methods("DELETE")
+	sr.HandleFunc("/stream", u.AuthnticateUser(s.SubscribeClientStream))
 }
