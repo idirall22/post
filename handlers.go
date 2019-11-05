@@ -16,7 +16,6 @@ func (s *Service) AddPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {
-
 		message, code := parseError(err)
 		http.Error(w, message, code)
 
@@ -42,6 +41,8 @@ func (s *Service) AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	if json.NewEncoder(w).Encode(post); err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
+
+	go s.broker.Brodcast(post)
 }
 
 // ListPostsHandler list posts
